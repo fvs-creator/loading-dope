@@ -1,0 +1,133 @@
+-- Final Transparent Dupe Hub Loading + Dupe Button
+-- LocalScript in StarterGui
+
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+
+local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "DupeHubLoading"
+screenGui.ResetOnSpawn = false
+screenGui.Parent = playerGui
+
+-- Main Frame (Transparent)
+local main = Instance.new("Frame")
+main.Size = UDim2.new(0, 500, 0, 280)
+main.Position = UDim2.new(0.5, -250, 0.5, -140)
+main.BackgroundColor3 = Color3.fromRGB(10, 10, 15)
+main.BackgroundTransparency = 0.35
+main.BorderSizePixel = 0
+main.Visible = true
+main.Parent = screenGui
+
+local corner = Instance.new("UICorner")
+corner.CornerRadius = UDim.new(0, 16)
+corner.Parent = main
+
+local stroke = Instance.new("UIStroke")
+stroke.Thickness = 4
+stroke.Color = Color3.fromRGB(0, 180, 255)
+stroke.Transparency = 0.2
+stroke.Parent = main
+
+-- Title
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, 0, 0, 80)
+title.BackgroundTransparency = 1
+title.Text = "Dupe Hub"
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.TextScaled = true
+title.Font = Enum.Font.GothamBlack
+title.Parent = main
+
+-- Loading Bar
+local barBg = Instance.new("Frame")
+barBg.Size = UDim2.new(0.85, 0, 0, 30)
+barBg.Position = UDim2.new(0.075, 0, 0.45, -15)
+barBg.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
+barBg.BackgroundTransparency = 0.4
+barBg.Parent = main
+
+local barCorner = Instance.new("UICorner")
+barCorner.CornerRadius = UDim.new(0, 12)
+barCorner.Parent = barBg
+
+local progress = Instance.new("Frame")
+progress.Size = UDim2.new(0, 0, 1, 0)
+progress.BackgroundColor3 = Color3.fromRGB(0, 200, 255)
+progress.BackgroundTransparency = 0.1
+progress.Parent = barBg
+
+local progCorner = Instance.new("UICorner")
+progCorner.CornerRadius = UDim.new(0, 12)
+progCorner.Parent = progress
+
+-- Loading Text
+local loadingText = Instance.new("TextLabel")
+loadingText.Size = UDim2.new(1, 0, 0, 40)
+loadingText.Position = UDim2.new(0, 0, 0.62, 0)
+loadingText.BackgroundTransparency = 1
+loadingText.Text = "Loading..."
+loadingText.TextColor3 = Color3.fromRGB(0, 220, 255)
+loadingText.TextScaled = true
+loadingText.Font = Enum.Font.GothamBold
+loadingText.Parent = main
+
+-- Dupe Button (Hidden at first)
+local dupeButton = Instance.new("TextButton")
+dupeButton.Size = UDim2.new(0.7, 0, 0, 65)
+dupeButton.Position = UDim2.new(0.15, 0, 0.78, 0)
+dupeButton.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+dupeButton.BackgroundTransparency = 0.1
+dupeButton.Text = "DUPE"
+dupeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+dupeButton.TextScaled = true
+dupeButton.Font = Enum.Font.GothamBlack
+dupeButton.Visible = false
+dupeButton.Parent = main
+
+local btnCorner = Instance.new("UICorner")
+btnCorner.CornerRadius = UDim.new(0, 14)
+btnCorner.Parent = dupeButton
+
+local btnStroke = Instance.new("UIStroke")
+btnStroke.Thickness = 4
+btnStroke.Color = Color3.fromRGB(255, 255, 255)
+btnStroke.Parent = dupeButton
+
+-- Loading Animation (60 seconds)
+local tweenInfo = TweenInfo.new(60, Enum.EasingStyle.Linear)
+local tween = TweenService:Create(progress, tweenInfo, {Size = UDim2.new(1, 0, 1, 0)})
+tween:Play()
+
+-- When loading finishes
+tween.Completed:Connect(function()
+    loadingText.Text = "Loading Complete!"
+    
+    wait(0.8)
+    
+    -- Hide loading elements
+    barBg.Visible = false
+    loadingText.Visible = false
+    
+    -- Show DUPE button
+    dupeButton.Visible = true
+    
+    -- Optional: Make button pulse a bit
+    spawn(function()
+        while dupeButton.Visible do
+            TweenService:Create(dupeButton, TweenInfo.new(0.6, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), 
+                {BackgroundTransparency = 0.3}):Play()
+            wait(1.2)
+        end
+    end)
+end)
+
+-- Click Dupe Button to close
+dupeButton.MouseButton1Click:Connect(function()
+    screenGui:Destroy()
+end)
+
+print("✅ Final Transparent Dupe Hub Loading Ready")
